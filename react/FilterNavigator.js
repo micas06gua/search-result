@@ -9,6 +9,7 @@ import { useRuntime } from 'vtex.render-runtime'
 import FilterSidebar from './components/FilterSidebar'
 import SelectedFilters from './components/SelectedFilters'
 import AvailableFilters from './components/AvailableFilters'
+import CategoryFilters from './components/CategoryFilters'
 import {
   facetOptionShape,
   paramShape,
@@ -16,7 +17,7 @@ import {
 } from './constants/propTypes'
 import useSelectedFilters from './hooks/useSelectedFilters'
 
-import searchResult from './searchResult.css'
+import styles from './searchResult.css'
 
 export const CATEGORIES_TYPE = 'Categories'
 export const BRANDS_TYPE = 'Brands'
@@ -54,22 +55,17 @@ const FilterNavigator = ({
 
   const selectedFilters = useSelectedFilters(
     useMemo(() => {
-      const availableCategories = filter(prop('selected'), getCategories(tree))
-
       const options = [
-        ...availableCategories,
         ...map(prop('facets'), specificationFilters),
         ...brands,
         ...priceRanges,
       ]
 
       return flatten(options)
-    }, [brands, priceRanges, specificationFilters, tree])
+    }, [brands, priceRanges, specificationFilters])
   ).filter(facet => facet.selected)
 
   const getFilters = () => {
-    const categories = getCategories(tree)
-
     const hiddenFacetsNames = (
       path(['specificationFilters', 'hiddenFilters'], hiddenFacets) || []
     ).map(filter => filter.name)
@@ -88,11 +84,6 @@ const FilterNavigator = ({
       : []
 
     return [
-      !hiddenFacets.categories && {
-        type: CATEGORIES_TYPE,
-        title: CATEGORIES_TITLE,
-        facets: categories,
-      },
       ...mappedSpecificationFilters,
       !hiddenFacets.brands && {
         type: BRANDS_TYPE,
@@ -117,7 +108,7 @@ const FilterNavigator = ({
 
   if (loading && !mobile) {
     return (
-      <div className={searchResult.filters}>
+      <div className={styles.filters}>
         <ContentLoader
           style={{
             width: '100%',
@@ -139,7 +130,7 @@ const FilterNavigator = ({
 
   if (mobile) {
     return (
-      <div className={searchResult.filters}>
+      <div className={styles.filters}>
         <div className={filterClasses}>
           <FilterSidebar filters={getFilters()} />
         </div>
@@ -147,8 +138,10 @@ const FilterNavigator = ({
     )
   }
 
+  const categories = getCategories(tree)
+
   return (
-    <div className={searchResult.filters}>
+    <div className={styles.filters}>
       <div className={filterClasses}>
         <div className="bb b--muted-4">
           <h5 className="t-heading-5 mv5">
@@ -156,6 +149,11 @@ const FilterNavigator = ({
           </h5>
         </div>
         <SelectedFilters filters={selectedFilters} />
+        <CategoryFilters
+          title={CATEGORIES_TITLE}
+          filters={categories}
+          isVisible={hiddenFacets.categories}
+        />
         <AvailableFilters filters={getFilters()} priceRange={priceRange} />
       </div>
     </div>
