@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import { map, flatten, path, contains, filter, prop } from 'ramda'
+import { map, flatten, path, contains, prop } from 'ramda'
 import React, { useMemo } from 'react'
 import ContentLoader from 'react-content-loader'
 import { FormattedMessage } from 'react-intl'
@@ -27,13 +27,6 @@ export const SPECIFICATION_FILTERS_TYPE = 'SpecificationFilters'
 const CATEGORIES_TITLE = 'store/search.filter.title.categories'
 const BRANDS_TITLE = 'store/search.filter.title.brands'
 const PRICE_RANGES_TITLE = 'store/search.filter.title.price-ranges'
-
-const getCategories = (tree = []) => {
-  return [
-    ...tree,
-    ...flatten(tree.map(node => node.children && getCategories(node.children))),
-  ].filter(Boolean)
-}
 
 /**
  * Wrapper around the filters (selected and available) as well
@@ -138,8 +131,6 @@ const FilterNavigator = ({
     )
   }
 
-  const categories = getCategories(tree)
-
   return (
     <div className={styles.filters}>
       <div className={filterClasses}>
@@ -151,8 +142,8 @@ const FilterNavigator = ({
         <SelectedFilters filters={selectedFilters} />
         <CategoryFilters
           title={CATEGORIES_TITLE}
-          filters={categories}
-          isVisible={hiddenFacets.categories}
+          tree={tree}
+          isVisible={!hiddenFacets.categories}
         />
         <AvailableFilters filters={getFilters()} priceRange={priceRange} />
       </div>
