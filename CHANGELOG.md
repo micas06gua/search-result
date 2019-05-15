@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Doesn't display filter title when there is no filter types availables.
 
+### Added
+
+- Send productClick events to Pixel Manager.
+
 ## [3.17.8] - 2019-05-10
 ### Fixed
 - Fixed bug where the extension would break if no title was found.
