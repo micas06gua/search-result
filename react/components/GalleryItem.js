@@ -53,16 +53,19 @@ const GalleryItem = ({ item, displayMode, summary }) => {
   const { push } = usePixel()
 
   const sendProductClickEvent = product => {
+    product.selectedSku = product.sku.itemId
     push({ event: 'productClick', product })
   }
+
+  const product = normalizeProductSummary(item)
 
   return (
     <ExtensionPoint
       id="product-summary"
       {...summary}
-      product={normalizeProductSummary(item)}
+      product={product}
       displayMode={displayMode}
-      actionOnClick={() => sendProductClickEvent(item)}
+      actionOnClick={() => sendProductClickEvent(product)}
     />
   )
 }
